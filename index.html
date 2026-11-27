@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VHA 设备卡 — 预览</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: #edeff1;
+        font-family: Inter, sans-serif;
+        color: #111;
+      }
+      .page {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 40px 24px 48px;
+      }
+      h1 { font-size: 22px; margin: 0 0 6px; letter-spacing: -0.03em; }
+      p.lead { margin: 0 0 22px; color: #6f747c; font-size: 14px; }
+      .panel {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 4px 18px rgba(16, 24, 40, 0.05);
+        border: 1px solid #f2f4f6;
+        padding: 16px 16px 18px;
+      }
+      .panel-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        padding: 0 4px;
+      }
+      .panel-head h2 { margin: 0; font-size: 15px; }
+      .hint { font-size: 12px; color: #9aa0a8; }
+      #cards {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+      }
+      vha-device-card { min-height: 188px; }
+      @media (max-width: 800px) {
+        #cards { grid-template-columns: repeat(2, 1fr); }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <h1>VHA 设备卡</h1>
+      <p class="lead">本地预览，视觉对齐设计稿 Quick Access。开关为本地模拟状态；装进 Home Assistant 后会对真实实体调用服务。</p>
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Quick Access</h2>
+          <span class="hint">演示：Dyson / Hue / Xiaomi / HomePod</span>
+        </div>
+        <div id="cards"></div>
+      </section>
+    </div>
+    <script type="module" src="/src/preview.ts"></script>
+  </body>
+</html>

@@ -4,27 +4,11 @@
 
 VHA 是面向 Home Assistant 的 Lovelace 自定义卡片插件（HACS 类型：Dashboard / plugin）。
 
-卡片在视图中添加。不注册侧边栏，不改 `configuration.yaml`，不做整页仪表盘替换，不做 kiosk。
-
-规划已定为 9 张卡，同类只做一张，靠实体域和布局适配。不要再拆，不要再加第 10 张：
-
-1. `custom:vha-device-card` 设备卡（1.0，PR #1，待审查）
-2. `custom:vha-climate-card` 气候卡
-3. `custom:vha-sensor-card` 传感器卡
-4. `custom:vha-media-card` 媒体卡（遥控是同一张卡里的可选模块）
-5. `custom:vha-camera-card` 摄像卡
-6. `custom:vha-control-card` 调控卡
-7. `custom:vha-appliance-card` 家电卡
-8. `custom:vha-reminder-card` 提醒卡
-9. `custom:vha-library-card` 媒体库卡
-
-说明见 `docs/plugin-development.md` 与 `docs/cards/`。
+1.0 只提供一张设备卡 `custom:vha-device-card`：名称、型号、产品图、状态文案、底部开关。开关对真实实体调用对应服务。用户在 Lovelace 视图里添加卡片即可使用。
 
 ## 核心结构
 
-1.0 设备卡源码在分支 `cursor/add-vha-device-card-510d`（PR #1），当前主分支尚未包含插件代码。该分支结构：
-
-- `src/index.ts`：注册自定义元素与编辑器，并写入 `window.customCards`
+- `src/index.ts`：注册自定义元素 `vha-device-card` 与编辑器，并写入 `window.customCards`
 - `src/card.ts`：卡片渲染与更多信息
 - `src/editor.ts`：Lovelace 可视化配置（HA 内用 `ha-form`，本地预览用普通输入）
 - `src/toggle.ts`：可切换域、状态判断、服务调用
@@ -34,17 +18,13 @@ VHA 是面向 Home Assistant 的 Lovelace 自定义卡片插件（HACS 类型：
 - 仓库根目录 `vha.js`：已构建产物，供 HACS 在没有 GitHub Release 时加载
 - `hacs.json`：HACS Dashboard 清单，`filename` 为 `vha.js`
 
-后续卡片进入同一包，仍输出根目录 `vha.js`，资源路径 `/hacsfiles/VHA/vha.js`。
-
 ## 开发规范
 
 - 只做 Lovelace 卡片。不要注册侧边栏面板，不要要求修改 `configuration.yaml` 或 `panel_custom`。
-- 视觉与设备卡对齐：Inter / SF Pro、16px 圆角、14px 标题、11px 副标题、36×20 开关（开 `#1a1a1a`，关 `#e4e6ea`）。
-- 每张卡可单独加到视图里。布局容器（sections / grid / stack）、heading、徽章、markdown 继续用 HA 原生。
+- 卡片类型保持 `custom:vha-device-card`。视觉对齐 Quick Access：浅色底、名称、型号、右下产品图、底部状态与开关。
 - 改源码后必须 `npm run build`，并保证根目录 `vha.js` 与构建结果一致。
-- 保留 `hacs.json` 与中文 README 中的 HACS 安装说明。
+- 保留 `hacs.json` 与中文 README 中的 HACS 安装说明。HACS 资源路径为 `/hacsfiles/VHA/vha.js`。
 - 不要写入密钥，不要把插件安装进任何 Home Assistant 实例。
-- 不要合并 PR #1，除非用户明确要求。不要向 `main` 直接提交，不要 force-push。
 
 ## 优化记录
 
@@ -52,17 +32,10 @@ VHA 是面向 Home Assistant 的 Lovelace 自定义卡片插件（HACS 类型：
 
 - 目标：把已完成的设备卡源码与根目录 `vha.js` 放入仓库，供 HACS 以 Dashboard 插件安装。
 - 方法：以附件压缩包为源文件纳入仓库。本地预览核对四张 Quick Access 卡的名称、型号、图片、状态和开关。
-- 要点：无侧边栏、无 `configuration.yaml` 改动；安装后在视图中添加 `custom:vha-device-card`。记录在 PR #1 分支，不在本规划分支重复提交源码。
+- 要点：无侧边栏、无 `configuration.yaml` 改动；安装后在视图中添加 `custom:vha-device-card`。
 
 ### 2026-11-27 修复媒体播放器开关卡住
 
 - 目标：音箱等 `media_player` 从播放切到暂停后，开关仍显示打开，再次点击无法恢复播放。
 - 方法：`isActive` 只把 `playing` / `buffering` 视为打开，暂停后走 `media_play`。
-- 要点：服务仍是 `media_play` / `media_pause`；改源码后重新构建根目录 `vha.js`。此修复在 PR #1。
-
-### 2026-11-27 编写九张卡的开发规划
-
-- 目标：把盈松小窝、Tech 两个视图的现有卡片和设计稿归成 9 张 Lovelace 卡，写成中文文档，并为每张卡建工单和 Projects V2 看板。
-- 方法：只新增 `docs/` 与根 README 入口，不改插件业务代码，不合并 PR #1。设备卡工单放「待审查」，其余放「待办」。
-- 要点：遥控不单独成卡；传感器的曲线、统计、电量、能耗都是同一张卡的布局；风扇角度走调控卡；洗衣机走家电卡；Emby 一组走媒体库卡。
-- 工单已用 `gh issue create` 建在仓库（#2 至 #10），作者是 `cursor[bot]`。`card` 标签和 Projects V2 被安装令牌拒绝：个人账号下 `createProjectV2` 返回无权限，不要改用经典项目或再拆卡片来绕过。
+- 要点：服务仍是 `media_play` / `media_pause`；改源码后重新构建根目录 `vha.js`。
