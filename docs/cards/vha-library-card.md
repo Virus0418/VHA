@@ -1,7 +1,7 @@
 # 媒体库卡 `custom:vha-library-card`
 
-工单：@@ISSUE_LIBRARY@@  
-看板：@@PROJECT_URL@@ ，列「待办」
+工单：[#10](https://github.com/Virus0418/VHA/issues/10)  
+目标列：待办。Projects V2 未创建，说明见 [规划 · 看板](../plugin-development.md#看板)。
 
 ## 目标
 

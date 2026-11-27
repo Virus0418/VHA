@@ -1,7 +1,7 @@
 # 调控卡 `custom:vha-control-card`
 
-工单：@@ISSUE_CONTROL@@  
-看板：@@PROJECT_URL@@ ，列「待办」
+工单：[#7](https://github.com/Virus0418/VHA/issues/7)  
+目标列：待办。Projects V2 未创建，说明见 [规划 · 看板](../plugin-development.md#看板)。
 
 ## 目标
 

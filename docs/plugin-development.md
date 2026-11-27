@@ -1,6 +1,6 @@
 # VHA 插件开发规划
 
-本文是 VHA 的总规划。卡片细节在 [docs/cards](cards/)。看板：@@PROJECT_URL@@。
+本文是 VHA 的总规划。卡片细节在 [docs/cards](cards/)。看板没有建成，原因和每张工单的目标列见文末「看板」。
 
 依据是两份材料：
 
@@ -21,17 +21,17 @@
 
 已定 9 张，不要再拆，不要再加第 10 张：
 
-| 顺序 | 名称 | 类型 | 一张卡覆盖什么 | 工单 | 看板 |
+| 顺序 | 名称 | 类型 | 一张卡覆盖什么 | 工单 | 目标列 |
 | --- | --- | --- | --- | --- | --- |
-| 1 | 设备卡 | `custom:vha-device-card` | 开关、灯、风扇、门锁、封面、脚本/场景执行、产品图瓦片 | @@ISSUE_DEVICE@@ | 待审查 |
-| 2 | 气候卡 | `custom:vha-climate-card` | 空调圆环、模式、电源；可选耗电 | @@ISSUE_CLIMATE@@ | 待办 |
-| 3 | 传感器卡 | `custom:vha-sensor-card` | 数值、统计、曲线、电量、连通性、能耗色带、主机多指标、横排 glance | @@ISSUE_SENSOR@@ | 待办 |
-| 4 | 媒体卡 | `custom:vha-media-card` | 播放条；遥控是同一张卡里的可选模块 | @@ISSUE_MEDIA@@ | 待办 |
-| 5 | 摄像卡 | `custom:vha-camera-card` | 直播画面与多镜头。产品图开关不是这张卡 | @@ISSUE_CAMERA@@ | 待办 |
-| 6 | 调控卡 | `custom:vha-control-card` | 独立滑条（摆风角度、亮度、风速百分比） | @@ISSUE_CONTROL@@ | 待办 |
-| 7 | 家电卡 | `custom:vha-appliance-card` | 洗衣、烘干、洗碗、扫地等程序类家电 | @@ISSUE_APPLIANCE@@ | 待办 |
-| 8 | 提醒卡 | `custom:vha-reminder-card` | 告警列表加底部用量洞察。不是欢迎语 | @@ISSUE_REMINDER@@ | 待办 |
-| 9 | 媒体库卡 | `custom:vha-library-card` | 一整组媒体库：数量、最近添加、继续观看、服务器状态 | @@ISSUE_LIBRARY@@ | 待办 |
+| 1 | 设备卡 | `custom:vha-device-card` | 开关、灯、风扇、门锁、封面、脚本/场景执行、产品图瓦片 | [#2](https://github.com/Virus0418/VHA/issues/2) | 待审查 |
+| 2 | 气候卡 | `custom:vha-climate-card` | 空调圆环、模式、电源；可选耗电 | [#3](https://github.com/Virus0418/VHA/issues/3) | 待办 |
+| 3 | 传感器卡 | `custom:vha-sensor-card` | 数值、统计、曲线、电量、连通性、能耗色带、主机多指标、横排 glance | [#4](https://github.com/Virus0418/VHA/issues/4) | 待办 |
+| 4 | 媒体卡 | `custom:vha-media-card` | 播放条；遥控是同一张卡里的可选模块 | [#5](https://github.com/Virus0418/VHA/issues/5) | 待办 |
+| 5 | 摄像卡 | `custom:vha-camera-card` | 直播画面与多镜头。产品图开关不是这张卡 | [#6](https://github.com/Virus0418/VHA/issues/6) | 待办 |
+| 6 | 调控卡 | `custom:vha-control-card` | 独立滑条（摆风角度、亮度、风速百分比） | [#7](https://github.com/Virus0418/VHA/issues/7) | 待办 |
+| 7 | 家电卡 | `custom:vha-appliance-card` | 洗衣、烘干、洗碗、扫地等程序类家电 | [#8](https://github.com/Virus0418/VHA/issues/8) | 待办 |
+| 8 | 提醒卡 | `custom:vha-reminder-card` | 告警列表加底部用量洞察。不是欢迎语 | [#9](https://github.com/Virus0418/VHA/issues/9) | 待办 |
+| 9 | 媒体库卡 | `custom:vha-library-card` | 一整组媒体库：数量、最近添加、继续观看、服务器状态 | [#10](https://github.com/Virus0418/VHA/issues/10) | 待办 |
 
 明确不另开卡的内容：
 
@@ -234,18 +234,22 @@
 
 ## 看板
 
-项目：@@PROJECT_URL@@
+计划中的 GitHub Projects V2 名称是「VHA 卡片开发」，状态列是：待办、进行中、待审查、已完成。设备卡应在「待审查」，其余八张在「待办」。
 
-状态列：待办、进行中、待审查、已完成。
+这次没有项目链接。用当前环境里的 `gh`（GitHub App 安装令牌，身份是 `cursor[bot]`）调用 `createProjectV2`，所有者为 Virus0418 时，GitHub 返回：`cursor[bot] does not have permission to create projects on ownerId U_kgDOCF12Fg`。同时带上本仓库 ID 再试一次，错误相同。Virus0418 名下没有组织，不能改放到组织项目。经典 Projects 接口返回 404。因此九个工单都还没进任何项目。下表是目标列，不是已经生效的看板列。
 
-| 工单 | 列 |
+标签 `card` 和 `1.0` 也没能建。创建标签返回 403 `Resource not accessible by integration`。给工单追加已有标签同样被拒绝，所以工单目前没有标签。
+
+工单由 `gh issue create` 建在 `Virus0418/VHA`。作者显示为 `cursor[bot]`，因为这台环境的 `gh` 用的是 Cursor GitHub App 的安装令牌，不是带 `project` scope 的用户登录。
+
+| 工单 | 目标列 |
 | --- | --- |
-| 设备卡 @@ISSUE_DEVICE@@ | 待审查（PR #1 已开，未合并） |
-| 气候卡 @@ISSUE_CLIMATE@@ | 待办 |
-| 传感器卡 @@ISSUE_SENSOR@@ | 待办 |
-| 媒体卡 @@ISSUE_MEDIA@@ | 待办 |
-| 摄像卡 @@ISSUE_CAMERA@@ | 待办 |
-| 调控卡 @@ISSUE_CONTROL@@ | 待办 |
-| 家电卡 @@ISSUE_APPLIANCE@@ | 待办 |
-| 提醒卡 @@ISSUE_REMINDER@@ | 待办 |
-| 媒体库卡 @@ISSUE_LIBRARY@@ | 待办 |
+| 设备卡 [#2](https://github.com/Virus0418/VHA/issues/2) | 待审查（[PR #1](https://github.com/Virus0418/VHA/pull/1) 已开，未合并） |
+| 气候卡 [#3](https://github.com/Virus0418/VHA/issues/3) | 待办 |
+| 传感器卡 [#4](https://github.com/Virus0418/VHA/issues/4) | 待办 |
+| 媒体卡 [#5](https://github.com/Virus0418/VHA/issues/5) | 待办 |
+| 摄像卡 [#6](https://github.com/Virus0418/VHA/issues/6) | 待办 |
+| 调控卡 [#7](https://github.com/Virus0418/VHA/issues/7) | 待办 |
+| 家电卡 [#8](https://github.com/Virus0418/VHA/issues/8) | 待办 |
+| 提醒卡 [#9](https://github.com/Virus0418/VHA/issues/9) | 待办 |
+| 媒体库卡 [#10](https://github.com/Virus0418/VHA/issues/10) | 待办 |

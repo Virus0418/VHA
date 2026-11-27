@@ -65,3 +65,4 @@ VHA 是面向 Home Assistant 的 Lovelace 自定义卡片插件（HACS 类型：
 - 目标：把盈松小窝、Tech 两个视图的现有卡片和设计稿归成 9 张 Lovelace 卡，写成中文文档，并为每张卡建工单和 Projects V2 看板。
 - 方法：只新增 `docs/` 与根 README 入口，不改插件业务代码，不合并 PR #1。设备卡工单放「待审查」，其余放「待办」。
 - 要点：遥控不单独成卡；传感器的曲线、统计、电量、能耗都是同一张卡的布局；风扇角度走调控卡；洗衣机走家电卡；Emby 一组走媒体库卡。
+- 工单已用 `gh issue create` 建在仓库（#2 至 #10），作者是 `cursor[bot]`。`card` 标签和 Projects V2 被安装令牌拒绝：个人账号下 `createProjectV2` 返回无权限，不要改用经典项目或再拆卡片来绕过。

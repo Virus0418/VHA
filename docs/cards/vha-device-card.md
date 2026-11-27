@@ -1,7 +1,7 @@
 # 设备卡 `custom:vha-device-card`
 
-工单：@@ISSUE_DEVICE@@  
-看板：@@PROJECT_URL@@ ，列「待审查」  
+工单：[#2](https://github.com/Virus0418/VHA/issues/2)  
+目标列：待审查。Projects V2 未创建，说明见 [规划 · 看板](../plugin-development.md#看板)。  
 实现：[PR #1](https://github.com/Virus0418/VHA/pull/1)，分支 `cursor/add-vha-device-card-510d`。1.0 已提交，未合并。本规划不合并它。
 
 ## 目标

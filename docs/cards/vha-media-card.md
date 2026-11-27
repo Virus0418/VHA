@@ -1,7 +1,7 @@
 # 媒体卡 `custom:vha-media-card`
 
-工单：@@ISSUE_MEDIA@@  
-看板：@@PROJECT_URL@@ ，列「待办」
+工单：[#5](https://github.com/Virus0418/VHA/issues/5)  
+目标列：待办。Projects V2 未创建，说明见 [规划 · 看板](../plugin-development.md#看板)。
 
 遥控不是另一张卡。方向键、触摸板、键盘都是这张卡底部的可选模块，由 `show_remote` 控制。
 
