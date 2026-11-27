@@ -39,3 +39,9 @@ VHA 是面向 Home Assistant 的 Lovelace 自定义卡片插件（HACS 类型：
 - 目标：音箱等 `media_player` 从播放切到暂停后，开关仍显示打开，再次点击无法恢复播放。
 - 方法：`isActive` 只把 `playing` / `buffering` 视为打开，暂停后走 `media_play`。
 - 要点：服务仍是 `media_play` / `media_pause`；改源码后重新构建根目录 `vha.js`。
+
+### 2026-11-27 写入卡片审核与发布标准
+
+- 目标：合并或发布前有统一的卡片审核口径。
+- 方法：新增 `docs/card-review-standard.md`，并从文档索引、开发规划和根 README 链到该文。只改文档。
+- 要点：保留三档（卡片通过、试用版、正式小版本）和审核记录模板。不改插件源码与 `vha.js`。
