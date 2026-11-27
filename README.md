@@ -12,6 +12,12 @@ VHA 是一套面向 Home Assistant 的 Lovelace **自定义卡片**（HACS 类�
 
 ![VHA 设备卡预览](previews/device-cards.png)
 
+## 开发规划
+
+九张卡片的目标、现有仪表盘怎么归并、交互和界面要求见 [插件开发规划](docs/plugin-development.md)。
+
+- [文档索引](docs/README.md)
+
 ## 用 HACS 安装
 
 需要已安装 [HACS](https://hacs.xyz/) 的 Home Assistant（建议 2024.4 或更新）。
