@@ -2,11 +2,11 @@
 
 VHA 是一套面向 Home Assistant 的 Lovelace **自定义卡片**（HACS 类型：Dashboard）。
 
-1.0 先提供一张**设备 / 实体卡**（`custom:vha-device-card`），视觉对齐设计稿里 Quick Access 那一组：名称、型号、产品图或实体图、状态文案、底部开关。
+当前提供一张**设备卡**（`custom:vha-device-card`）。同一类型有三种排版：大图设备、竖图滑杆、电子设备模块。视觉对齐 [设计规范 1.0](docs/design-spec-1.0.md)。
 
 - 只需在仪表盘视图里添加卡片，**不必改 `configuration.yaml`**
 - **不会**注册自定义侧边栏面板，HA 原有菜单、顶栏、侧边栏保持原样
-- 开关会对真实实体调用服务（`light` / `switch` / `fan` / `input_boolean` / `cover` / `lock` 等常见可切换域）
+- 开关、滑杆和模式按钮会对真实实体调用服务（`light` / `switch` / `fan` / `humidifier` / `cover` / `lock` 等常见域）
 
 后续会按同一套风格继续补其他类型的卡片。
 
@@ -47,37 +47,34 @@ HACS 会把卡片模块登记为仪表盘资源，通常路径是：
 1. 打开任意 Lovelace 仪表盘，点右上角铅笔进入编辑。
 2. 在目标视图中点 **添加卡片**。
 3. 搜索 **VHA 设备卡**，或选「手动」后填写下面的 YAML。
-4. 在可视化编辑器里至少选择一个 **实体**，可选填写名称、型号、状态文案、图片地址。
+4. 在可视化编辑器里选择 **实体** 和 **排版形式**。大图可填名称、型号、状态和动作；电子设备可开关产品图、电源、电池、网络、位置和指标。
 5. 保存。
 
-YAML 示例：
+大图示例（省略 `layout` 时也是大图，旧配置可以不改）：
 
 ```yaml
 type: custom:vha-device-card
-entity: light.living_room
-name: Smart Lamp
-model: Philips Hue Bloom
-status: Neutral Light
-# image: /local/devices/hue-bloom.png   # 可选；留空则使用实体自带图片
+entity: humidifier.bedroom
+name: 卧室加湿
+status: Humidity
 show_toggle: true
 ```
 
-把四张设备卡放进同一行（例如 Sections 视图的一横排，或 Grid 卡片里）即可接近设计稿里的 Quick Access。
+竖图与电子设备的字段、模块开关和窄栏行为见 [设备卡说明](docs/cards/vha-device-card.md)。
 
 ## 配置项
 
 | 选项 | 必填 | 说明 |
 | --- | --- | --- |
 | `entity` | 是 | Home Assistant 实体 ID |
+| `layout` | 否 | `large` 大图、`vertical` 竖图、`electronics` 电子设备。省略为 `large` |
 | `name` | 否 | 标题，默认用实体友好名称 |
-| `model` | 否 | 副标题 / 型号，默认尝试用实体的 `model` / `model_id` 属性 |
-| `status` | 否 | 状态文案，留空则根据实体状态自动显示 |
+| `model` | 否 | 副标题 / 型号 |
+| `status` | 否 | 大图的说明文案，留空则自动 |
 | `image` | 否 | 图片 URL；留空则使用 `entity_picture` |
-| `show_toggle` | 否 | 是否显示底部开关，默认在可切换实体上为 `true` |
+| `show_toggle` | 否 | 大图是否显示电源开关，默认显示 |
 
-底部开关会对实体调用对应服务，例如 `light.turn_on` / `turn_off`、`lock.lock` / `unlock`、`cover.open_cover` / `close_cover`、`media_player.media_play` / `media_pause`。点击卡片或右上角 ⋮ 会打开该实体的「更多信息」。
-
-不可切换的实体（例如纯传感器）仍可展示名称、状态和图片，只是没有开关。
+电源开关、滑杆和模式按钮调用对应服务，例如 `light.turn_on` / `turn_off`、`humidifier.set_mode`、`lock.lock` / `unlock`。点击标题或产品图打开该实体的「更多信息」；开关和滑杆不会误开。不可用时显示「不可用」并禁用写入。服务失败时卡片上留一句短错误。
 
 ## 手动安装（不用 HACS）
 
