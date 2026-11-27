@@ -5,6 +5,7 @@
 ## 规划
 
 - [插件开发规划](plugin-development.md)：目标、归并原则、现有仪表盘映射、九张卡一览、路线图、看板
+- [设计规范 1.0](design-spec-1.0.md)：第一批卡片的视觉语言、尺寸与 token、共用控件、已知不严谨处、电子设备卡产品要求。设计来源是 Figma 文件 [HAUI](https://www.figma.com/design/IwGZXxoRz00glVJcDiTEEE/HAUI)
 - 看板：没有建成。目标列和原因见 [规划 · 看板](plugin-development.md#看板)。
 
 ## 卡片
