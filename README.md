@@ -18,6 +18,7 @@ VHA 是一套面向 Home Assistant 的 Lovelace **自定义卡片**（HACS 类�
 
 - [文档索引](docs/README.md)
 - [设计规范 1.0](docs/design-spec-1.0.md)
+- [卡片审核与发布标准](docs/card-review-standard.md)
 
 ## 用 HACS 安装
 
