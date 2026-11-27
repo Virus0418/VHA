@@ -8,7 +8,7 @@
 - 设计稿：客厅总览。画面上有 CCTV、Smart Reminder、圆环温控、Quick Access 设备瓦、底部媒体条、右下能耗区。
 - 第一批卡片的视觉语言：[设计规范 1.0](design-spec-1.0.md)。设计来源是 Figma 文件 [HAUI](https://www.figma.com/design/IwGZXxoRz00glVJcDiTEEE/HAUI)，页面「01 · Card」，展示板「Showcase · First batch」。
 
-1.0 设备卡已经按 Quick Access 做完，本地预览与设计稿的四张设备瓦一致。代码在 [PR #1](https://github.com/Virus0418/VHA/pull/1)（分支 `cursor/add-vha-device-card-510d`），尚未合并。本规划不实现代码，也不合并该请求。
+设备卡的当前实现按 [设计规范 1.0](design-spec-1.0.md) 重做：仍是 `custom:vha-device-card`，用 `layout` 区分大图、竖图和电子设备模块。字段和模块开关见 [设备卡](cards/vha-device-card.md)。[PR #1](https://github.com/Virus0418/VHA/pull/1) 是上一版 Quick Access 紧凑瓦，不作为当前视觉。九类归并仍然有效。
 
 ## 目标
 
@@ -60,7 +60,7 @@
 
 每张卡在合并或发布前，都要按 [卡片审核与发布标准](card-review-standard.md) 审核。
 
-- 视觉与 1.0 设备卡同一套：字体 Inter / SF Pro / 系统无衬线；标题 14px / 700；副标题 11px `#9aa0a8`；状态 12px `#6f747c`；圆角 16px；开关 36×20，关 `#e4e6ea`，开 `#1a1a1a`。设计稿是白底卡片放在浅灰视图上。1.0 设备卡底色是 `#f6f8fa`。新卡用白底 `#ffffff`，控件尺寸和字号跟设备卡走，不另做一套开关。
+- 视觉以 [设计规范 1.0](design-spec-1.0.md) 为准。设备卡已经改用该规范（圆角 40、底色 `#F0EFF2`），不再使用早先 Quick Access 的 14px 标题和 16px 圆角。其余卡片在各自实现前也以规范 1.0 为准。
 - 关态或离线：产品图降低饱和度和透明度，与设备卡一致。
 - 编辑器统一用 Lovelace 可视化编辑器。HA 内走 `ha-form` 和实体选择器，标签用中文。本地预览可以退回普通输入。字段命名用蛇形，和设备卡的 `show_toggle` 同一风格。
 - 每张卡注册进 `window.customCards`，可以单独在「添加卡片」里搜到。
@@ -73,7 +73,7 @@
 
 开发顺序就是看板从上到下的优先级。完成一张再开下一张的实现，文档和工单一次建齐。合并或发布前，按 [卡片审核与发布标准](card-review-standard.md) 审核。
 
-1. 设备卡 1.0。进行中，[PR #1](https://github.com/Virus0418/VHA/pull/1) 已开。先审查、合并，再发 HACS。本任务不合并。
+1. 设备卡。按规范 1.0 重做大图、竖图、电子设备模块，说明见 [设备卡](cards/vha-device-card.md)。[PR #1](https://github.com/Virus0418/VHA/pull/1) 是上一版 Quick Access。
 2. 气候卡。主视图三台空调，也是设计稿右侧圆环。
 3. 传感器卡。替换数量最多：盈松小窝的体重、电量、PC 指标，Tech 的 NAS / PC / 连通性。
 4. 媒体卡，含可选遥控模块。替换 KODI 媒体控制和 universal-remote-card。
@@ -83,7 +83,7 @@
 8. 提醒卡。设计稿 Smart Reminder，当前没有同类卡。
 9. 媒体库卡。替换 Tech「WBC-EMBY 媒体库」整组。
 
-设备卡合并之后的附加控件（回正、摆风开关、大图布局、脚本显示「执行」）仍算设备卡的后续，不插队成新类型，也不挡住气候卡开工。附加控件可以跟在 1.0 合并后的同一个工单里做。
+大图、竖图和电子设备模块已经是同一张设备卡的三种排版。脚本显示「执行」、风扇回正和摆风开关仍是设备卡的后续，不另开卡片类型。摆风角度仍归调控卡。
 
 ## 现有仪表盘映射
 
@@ -228,7 +228,7 @@
 
 | 设计稿区域 | 归并 | 说明 |
 | --- | --- | --- |
-| Quick Access 四张设备瓦 | 设备卡 | 1.0 已按此做完。视图用 HA 的 grid / sections 横排，插件不提供 Quick Access 容器 |
+| Quick Access 四张设备瓦 | 设备卡 | 归入设备卡的大图或电子设备排版。插件不提供 Quick Access 容器，横排用 HA 的 grid / sections |
 | Temperature Control 圆环 | 气候卡 | 替换三张 thermostat，不要照抄设计稿上写死的 Auto / Wind / Heat / Swing |
 | Energy Efficiency、Total Energy、色带 | 传感器卡 `energy` | 卧室耗电统计仍可用 `statistic` 布局；色带是另一种布局 |
 | Speaker 媒体条 | 媒体卡 | 替换 KODI media-control |
@@ -247,7 +247,7 @@
 
 | 工单 | 目标列 |
 | --- | --- |
-| 设备卡 [#2](https://github.com/Virus0418/VHA/issues/2) | 待审查（[PR #1](https://github.com/Virus0418/VHA/pull/1) 已开，未合并） |
+| 设备卡 [#2](https://github.com/Virus0418/VHA/issues/2) | 待审查。当前实现见 [设备卡](cards/vha-device-card.md)。[PR #1](https://github.com/Virus0418/VHA/pull/1) 是上一版 Quick Access |
 | 气候卡 [#3](https://github.com/Virus0418/VHA/issues/3) | 待办 |
 | 传感器卡 [#4](https://github.com/Virus0418/VHA/issues/4) | 待办 |
 | 媒体卡 [#5](https://github.com/Virus0418/VHA/issues/5) | 待办 |

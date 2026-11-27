@@ -73,7 +73,7 @@ export function defaultStatus(hass: HomeAssistant | undefined, state?: HassEntit
     const mode = state.attributes.color_mode;
     if (typeof state.attributes.brightness === "number") {
       const pct = Math.round((Number(state.attributes.brightness) / 255) * 100);
-      return `${pct}%`;
+      return `${pct} %`;
     }
     if (mode === "color_temp") return "Neutral Light";
     return "On";

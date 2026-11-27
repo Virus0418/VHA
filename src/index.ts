@@ -13,7 +13,7 @@ if (!window.customCards.some((c) => c.type === "vha-device-card")) {
   window.customCards.push({
     type: "vha-device-card",
     name: "VHA 设备卡",
-    description: "浅色产品化设备卡片：名称、型号、图片、状态和底部开关。",
+    description: "设备卡：大图设备、竖图滑杆、电子设备模块三种排版。",
     preview: true,
   });
 }
