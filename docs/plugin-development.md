@@ -2,10 +2,11 @@
 
 本文是 VHA 的总规划。卡片细节在 [docs/cards](cards/)。看板没有建成，原因和每张工单的目标列见文末「看板」。
 
-依据是两份材料：
+依据是这些材料：
 
 - 当前 Home Assistant 主仪表盘「概览 / lovelace」的两个视图：盈松小窝、Tech。清单里的每一张卡都在下面的映射表里。
 - 设计稿：客厅总览。画面上有 CCTV、Smart Reminder、圆环温控、Quick Access 设备瓦、底部媒体条、右下能耗区。
+- 第一批卡片的视觉语言：[设计规范 1.0](design-spec-1.0.md)。设计来源是 Figma 文件 [HAUI](https://www.figma.com/design/IwGZXxoRz00glVJcDiTEEE/HAUI)，页面「01 · Card」，展示板「Showcase · First batch」。
 
 1.0 设备卡已经按 Quick Access 做完，本地预览与设计稿的四张设备瓦一致。代码在 [PR #1](https://github.com/Virus0418/VHA/pull/1)（分支 `cursor/add-vha-device-card-510d`），尚未合并。本规划不实现代码，也不合并该请求。
 
