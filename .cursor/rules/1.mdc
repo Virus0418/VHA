@@ -30,8 +30,8 @@ VHA 是面向 Home Assistant 的 Lovelace 自定义卡片插件（HACS 类型：
 ## 开发规范
 
 - 只做 Lovelace 卡片。不要注册侧边栏面板，不要要求修改 `configuration.yaml` 或 `panel_custom`。
-- 已有类型保持不变：设备卡、气候卡、传感器卡、媒体卡。视觉对齐设计规范 1.0。不要实现摄像、调控、家电、提醒、媒体库，也不要另加第 10 种类型。
-- 气候、传感器、媒体未在真实 Home Assistant 验收前，不要写成「卡片通过」。
+- 已有类型保持不变：设备卡、气候卡、传感器卡、媒体卡。设计规范 1.0 是当前视觉参考，即将按新设计稿重做；字号、圆角、颜色不是不可更改的合并条件。验收以 `docs/card-review-standard.md` 的 A / B 分层为准。不要实现摄像、调控、家电、提醒、媒体库，也不要另加第 10 种类型。`electronics` 只是设备卡的一种 `layout`。
+- 没有 Home Assistant 现场测试，不要写成「卡片通过」。GitHub Pages 虚拟实体预览通过后，才考虑合并和安装测试。
 - 改源码后必须 `npm run build`，并保证根目录 `vha.js` 与构建结果一致。
 - 保留 `hacs.json` 与中文 README 中的 HACS 安装说明。HACS 资源路径为 `/hacsfiles/VHA/vha.js`。
 - 不要写入密钥，不要把插件安装进任何 Home Assistant 实例。
@@ -73,3 +73,15 @@ VHA 是面向 Home Assistant 的 Lovelace 自定义卡片插件（HACS 类型：
 - 目标：在不改设备卡行为的前提下，做出 `custom:vha-climate-card`、`custom:vha-sensor-card`（`insight` / `metrics`）、`custom:vha-media-card`。
 - 方法：复用设备卡的 token、字体、不可用处理和短错误。气候制热 / 制冷是同一张卡的模式变体。传感器目标滑杆和芯片默认不出现。媒体房间可增删，`show: false` 隐藏。进度用 `m:ss`。
 - 要点：仍是单一 `vha.js`。圆环调温、其余传感器布局、遥控模块未做。本地预览已看过，未做实机测试，不标「卡片通过」。
+
+### 2026-11-28 重写卡片审查验收标准
+
+- 目标：按 Home Assistant 官方自定义卡片、Sections 网格、动作、选卡面板和 HACS / Marketplace 文档，把审查标准分成平台验收和产品验收。
+- 方法：重写 `docs/card-review-standard.md`，并同步 README、文档索引、开发规划、设计规范开头的状态说明。不改 `src/` 与 `vha.js`。
+- 要点：Pages 虚拟实体预览通过后才合并；现场测试后才能标「卡片通过」。设计规范 1.0 降为当前视觉参考。关闭态仍可操作；`getStubConfig` 必须挑同类实体且预览不得写入真实设备。
+
+### 2026-11-28 按复审修订审查标准
+
+- 目标：设计者能直接对照，且不把上一轮实现写成新稿的硬条件。
+- 方法：在官方依据之前加白话「设计对照清单」。B 层拆成第 4.1 节必须遵守、第 4.2 节起上一轮记录。补上不用 `sun.sun`、不用原生状态色、不做可配置长按双击这三处有意差异。A 层条款不改写。
+- 要点：不改 `src/` 与 `vha.js`。仍在同一审查标准文档里。

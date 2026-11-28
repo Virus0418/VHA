@@ -6,7 +6,7 @@
 
 - [插件开发规划](plugin-development.md)：目标、归并原则、现有仪表盘映射、九张卡一览、路线图、看板
 - [设计规范 1.0](design-spec-1.0.md)：第一批卡片的视觉语言、尺寸与 token、共用控件、已知不严谨处、电子设备卡产品要求。设计来源是 Figma 文件 [HAUI](https://www.figma.com/design/IwGZXxoRz00glVJcDiTEEE/HAUI)
-- [卡片审核与发布标准](card-review-standard.md)：设计、配置、行为、安装四道关；发布档位为卡片通过、试用版、正式小版本
+- [卡片审查验收标准](card-review-standard.md)：文首是给设计对照的白话清单。A 层是平台与工程验收。B 层分开写：第 4.1 节是新设计也必须遵守的状态和入口，第 4.2 节起是上一轮实现记录，新稿可以改。GitHub Pages 虚拟实体预览通过后才合并；Home Assistant 现场测试后才能标「卡片通过」
 - 看板：没有建成。目标列和原因见 [规划 · 看板](plugin-development.md#看板)。
 
 ## 卡片
