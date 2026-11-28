@@ -2,6 +2,8 @@ import { labelForFraction, pressPower, pressRail, writeSlider, type ResolvedActi
 import { escapeAttr, escapeHtml, shortError } from "./format";
 import { actionIcon, silhouetteIcon, uiIcon } from "./icons";
 import { buildView, type CardView, type RailButton } from "./model";
+import { paintChanged } from "./paint";
+import { deviceStub, isPickerPreview } from "./stub";
 import { cardStyles } from "./styles";
 import type { HomeAssistant, VhaDeviceCardConfig } from "./types";
 
@@ -13,6 +15,7 @@ export class VhaDeviceCard extends HTMLElement {
   private _imageIndex = 0;
   private _broken = new Set<string>();
   private _dragging = false;
+  private _paintKey = "";
 
   constructor() {
     super();
@@ -23,8 +26,12 @@ export class VhaDeviceCard extends HTMLElement {
     return document.createElement("vha-device-card-editor");
   }
 
-  static getStubConfig(): VhaDeviceCardConfig {
-    return { type: "custom:vha-device-card", entity: "", layout: "large" };
+  static getStubConfig(
+    hass?: HomeAssistant,
+    entities: string[] = [],
+    entitiesFallback: string[] = [],
+  ): VhaDeviceCardConfig {
+    return deviceStub(hass, entities, entitiesFallback);
   }
 
   setConfig(config: VhaDeviceCardConfig) {
@@ -85,6 +92,7 @@ export class VhaDeviceCard extends HTMLElement {
   }
 
   private async _run(task: () => Promise<void>) {
+    if (isPickerPreview(this)) return;
     try {
       await task();
       this._error = "";
@@ -99,12 +107,18 @@ export class VhaDeviceCard extends HTMLElement {
     this._ensureStyles();
     const view = this._view();
     if (view.empty) {
+      const decision = paintChanged(this._paintKey, { empty: true, error: this._error });
+      if (!decision.changed) return;
       this.shadowRoot.innerHTML = `<ha-card class="card"><p class="warning">请选择一个实体</p></ha-card>`;
+      this._paintKey = decision.key;
       return;
     }
     const picture = view.image && !this._broken.has(view.image) ? view.image : undefined;
+    const decision = paintChanged(this._paintKey, { view, picture: picture ?? "", error: this._error });
+    if (!decision.changed) return;
     this.shadowRoot.innerHTML = renderCard(view, picture, this._error);
     this._bind(view);
+    this._paintKey = decision.key;
   }
 
   private _bind(view: CardView) {

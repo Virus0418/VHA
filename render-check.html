@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>VHA render check</title>
+    <style>
+      body { margin: 0; background: #f4f4f6; }
+      #dark {
+        background: #1c1c1e;
+        color: #f2f2f4;
+        padding: 16px;
+        --primary-text-color: #f2f2f4;
+        --secondary-text-color: #c7c7cc;
+        --card-background-color: #1c1c1e;
+        --ha-card-background: #1c1c1e;
+        --ha-card-border-width: 1px;
+        --ha-card-border-color: rgba(255, 255, 255, 0.12);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="out"></div>
+    <div id="dark"></div>
+    <pre id="log"></pre>
+    <script type="module" src="/src/check-render.ts"></script>
+  </body>
+</html>

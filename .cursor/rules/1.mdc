@@ -73,3 +73,15 @@ VHA 是面向 Home Assistant 的 Lovelace 自定义卡片插件（HACS 类型：
 - 目标：在不改设备卡行为的前提下，做出 `custom:vha-climate-card`、`custom:vha-sensor-card`（`insight` / `metrics`）、`custom:vha-media-card`。
 - 方法：复用设备卡的 token、字体、不可用处理和短错误。气候制热 / 制冷是同一张卡的模式变体。传感器目标滑杆和芯片默认不出现。媒体房间可增删，`show: false` 隐藏。进度用 `m:ss`。
 - 要点：仍是单一 `vha.js`。圆环调温、其余传感器布局、遥控模块未做。本地预览已看过，未做实机测试，不标「卡片通过」。
+
+### 2026-11-28 修复气候卡关闭态点不了
+
+- 目标：真实 Home Assistant 里关闭的空调卡和设计稿不像，而且芯片、电源完全点不了。
+- 方法：关闭态不再禁用芯片和电源；点模式直接 `set_hvac_mode`，开机先 `turn_on` 再回退到上一次或第一个非关闭模式。四张卡在 `hass` 快照不变时跳过整卡 `innerHTML`。标题最多两行，栅格至少 4 列，底色写进 `--ha-card-background`。
+- 要点：不标「卡片通过」，等用户更新插件后再在实机看。仍是单一 `vha.js`。不改 Home Assistant 配置。
+
+### 2026-11-28 选卡示意与 GitHub Pages 预览
+
+- 目标：添加卡片时不要只看到「请选择一个实体」；做完先在 Pages 上用虚拟实体看效果，再装进 Home Assistant。
+- 方法：四张卡的 `getStubConfig(hass, entities, entitiesFallback)` 从家里已有实体里挑同类设备。预览站复用 `src/preview.ts`，`npm run pages` 以 `/VHA/` 为基路径构建，Actions 在推送时部署。
+- 要点：选卡示意不调用服务。没有对应实体时仍是空态。不标「卡片通过」。

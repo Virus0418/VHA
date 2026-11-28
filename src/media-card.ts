@@ -2,6 +2,8 @@ import { bindInfo, openMoreInfo } from "./bind";
 import { escapeAttr, escapeHtml, shortError } from "./format";
 import { markIcon } from "./icons";
 import { buildMediaView, pressRoom, pressTransport, type MediaView } from "./media-model";
+import { paintChanged } from "./paint";
+import { isPickerPreview, mediaStub } from "./stub";
 import { cardStyles } from "./styles";
 import type { HomeAssistant, VhaMediaCardConfig } from "./types";
 
@@ -11,6 +13,7 @@ export class VhaMediaCard extends HTMLElement {
   private _sheet?: CSSStyleSheet;
   private _error = "";
   private _broken = new Set<string>();
+  private _paintKey = "";
 
   constructor() {
     super();
@@ -21,8 +24,12 @@ export class VhaMediaCard extends HTMLElement {
     return document.createElement("vha-media-card-editor");
   }
 
-  static getStubConfig(): VhaMediaCardConfig {
-    return { type: "custom:vha-media-card", entity: "" };
+  static getStubConfig(
+    hass?: HomeAssistant,
+    entities: string[] = [],
+    entitiesFallback: string[] = [],
+  ): VhaMediaCardConfig {
+    return mediaStub(hass, entities, entitiesFallback);
   }
 
   setConfig(config: VhaMediaCardConfig) {
@@ -61,6 +68,7 @@ export class VhaMediaCard extends HTMLElement {
   }
 
   private async _run(task: () => Promise<void>) {
+    if (isPickerPreview(this)) return;
     try {
       await task();
       this._error = "";
@@ -75,8 +83,11 @@ export class VhaMediaCard extends HTMLElement {
     this._ensureStyles();
     const view = buildMediaView(this._config, this._hass);
     const image = view.image && !this._broken.has(view.image) ? view.image : undefined;
+    const decision = paintChanged(this._paintKey, { view, image: image ?? "", error: this._error });
+    if (!decision.changed) return;
     this.shadowRoot.innerHTML = renderMedia(view, image, this._error);
     this._bind(view);
+    this._paintKey = decision.key;
   }
 
   private _bind(view: MediaView) {

@@ -49,11 +49,21 @@ ha-card, .card {
   width: 100%;
   max-width: 100%;
   min-width: 0;
-  background: #F0EFF2;
-  color: #111111;
-  border: 0;
-  border-radius: 40px;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.07);
+  --ha-card-background: #F0EFF2;
+  --ha-card-border-width: 0;
+  --ha-card-border-color: transparent;
+  --ha-card-border-radius: 40px;
+  --ha-card-box-shadow: 0 10px 28px rgba(0, 0, 0, 0.07);
+  --primary-text-color: #111111;
+  --secondary-text-color: #3A3A3C;
+  background: var(--ha-card-background);
+  color: var(--primary-text-color);
+  color-scheme: light;
+  border-width: var(--ha-card-border-width);
+  border-style: solid;
+  border-color: transparent;
+  border-radius: var(--ha-card-border-radius);
+  box-shadow: var(--ha-card-box-shadow);
   overflow: hidden;
   container-type: inline-size;
   container-name: vha;
@@ -542,6 +552,22 @@ button:disabled { opacity: 0.45; cursor: default; }
   overflow-wrap: anywhere;
   text-align: left;
 }
+.layout-climate .ititle {
+  display: block;
+  overflow: hidden;
+  overflow-wrap: normal;
+  word-break: keep-all;
+}
+.layout-climate .clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  word-break: keep-all;
+  overflow-wrap: normal;
+  line-height: 38px;
+  max-height: 76px;
+}
 .iactions { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; }
 .overflow {
   width: 32px;
@@ -683,20 +709,24 @@ button:disabled { opacity: 0.45; cursor: default; }
 }
 
 ha-card.tone-heat, .card.tone-heat {
-  background: linear-gradient(90deg, #FFE7C4 0%, #FFF1DC 40%, #F7EEE4 100%);
+  --ha-card-background: linear-gradient(90deg, #FFE7C4 0%, #FFF1DC 40%, #F7EEE4 100%);
 }
 ha-card.tone-cool, .card.tone-cool {
-  background: linear-gradient(90deg, #DCEAFB 0%, #E7F1EE 45%, #E4EEF7 100%);
+  --ha-card-background: linear-gradient(90deg, #DCEAFB 0%, #E7F1EE 45%, #E4EEF7 100%);
 }
 ha-card.tone-neutral, .card.tone-neutral {
-  background: linear-gradient(90deg, #E7F1EE 0%, #F0EFF2 55%, #E4EEF7 100%);
+  --ha-card-background: linear-gradient(90deg, #E7F1EE 0%, #F0EFF2 55%, #E4EEF7 100%);
 }
-ha-card.tone-off, .card.tone-off { background: #F0EFF2; }
+ha-card.tone-off, .card.tone-off { --ha-card-background: #F0EFF2; }
 .layout-climate { padding: 28px 28px 24px; }
 
-ha-card.card-lg, .card.card-lg { border-radius: 44px; }
+ha-card.card-lg, .card.card-lg {
+  --ha-card-border-radius: 44px;
+  border-radius: 44px;
+}
 ha-card.insight, .card.insight {
-  background: linear-gradient(160deg, #FFEDC5 0%, #F8F0C8 24%, #F0F0D8 46%, #E7F1EE 70%, #D8EBFF 100%);
+  --ha-card-background: linear-gradient(160deg, #FFEDC5 0%, #F8F0C8 24%, #F0F0D8 46%, #E7F1EE 70%, #D8EBFF 100%);
+  background: var(--ha-card-background);
 }
 .layout-insight { padding: 32px 28px 28px; }
 .layout-insight .eyebrow { margin-top: 32px; }
@@ -728,7 +758,8 @@ ha-card.insight, .card.insight {
 }
 
 ha-card.metrics, .card.metrics {
-  background: linear-gradient(180deg, #E4F0FB 0%, #E8EDF5 52%, #F0EBEC 100%);
+  --ha-card-background: linear-gradient(180deg, #E4F0FB 0%, #E8EDF5 52%, #F0EBEC 100%);
+  background: var(--ha-card-background);
 }
 .layout-metrics {
   padding: 28px 20px 20px;
@@ -752,7 +783,10 @@ ha-card.metrics, .card.metrics {
 .stack-tiles { display: flex; flex-direction: column; gap: 12px; width: 100%; }
 .stack-tiles .tile { flex: none; width: 100%; }
 
-ha-card.media, .card.media { background: #E3E9EE; }
+ha-card.media, .card.media {
+  --ha-card-background: #E3E9EE;
+  background: var(--ha-card-background);
+}
 .layout-media {
   padding: 24px 20px 20px 24px;
   display: flex;
@@ -850,5 +884,13 @@ ha-card.media, .card.media { background: #E3E9EE; }
   .media-body { flex-direction: column; align-items: stretch; }
   .player { width: 100%; flex-basis: auto; }
   .layout-media { padding: 20px; }
+}
+@container vha (max-width: 400px) {
+  .layout-climate { padding: 16px; }
+  .layout-climate .eyebrow { margin-top: 12px; }
+  .layout-climate .hero { margin-top: 8px; }
+  .layout-climate .tagline { margin-top: 8px; }
+  .layout-climate .chips { margin-top: 12px; }
+  .layout-climate .fanblock { margin-top: 12px; }
 }
 `;

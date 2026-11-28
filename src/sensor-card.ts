@@ -11,6 +11,8 @@ import {
   writeSensorTarget,
   type SensorView,
 } from "./sensor-model";
+import { paintChanged } from "./paint";
+import { isPickerPreview, sensorStub } from "./stub";
 import { cardStyles } from "./styles";
 import type { HomeAssistant, VhaSensorCardConfig } from "./types";
 
@@ -21,6 +23,7 @@ export class VhaSensorCard extends HTMLElement {
   private _error = "";
   private _dragging = false;
   private _historyToken = 0;
+  private _paintKey = "";
 
   constructor() {
     super();
@@ -31,8 +34,12 @@ export class VhaSensorCard extends HTMLElement {
     return document.createElement("vha-sensor-card-editor");
   }
 
-  static getStubConfig(): VhaSensorCardConfig {
-    return { type: "custom:vha-sensor-card", entity: "", layout: "insight" };
+  static getStubConfig(
+    hass?: HomeAssistant,
+    entities: string[] = [],
+    entitiesFallback: string[] = [],
+  ): VhaSensorCardConfig {
+    return sensorStub(hass, entities, entitiesFallback);
   }
 
   setConfig(config: VhaSensorCardConfig) {
@@ -73,6 +80,7 @@ export class VhaSensorCard extends HTMLElement {
   }
 
   private async _run(task: () => Promise<void>) {
+    if (isPickerPreview(this)) return;
     try {
       await task();
       this._error = "";
@@ -86,8 +94,11 @@ export class VhaSensorCard extends HTMLElement {
     if (!this.shadowRoot || this._dragging) return;
     this._ensureStyles();
     const view = buildSensorView(this._config, this._hass);
+    const decision = paintChanged(this._paintKey, { view, error: this._error });
+    if (!decision.changed) return;
     this.shadowRoot.innerHTML = renderSensor(view, this._error);
     this._bind(view);
+    this._paintKey = decision.key;
     if (view.kind === "insight" && view.showTimeline && view.entityId) void this._loadHistory(view.entityId);
   }
 
