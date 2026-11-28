@@ -60,20 +60,20 @@
 
 ## 共享约定
 
-每张卡在合并或发布前，都要按 [卡片审核与发布标准](card-review-standard.md) 审核。
+每张卡在合并或发布前，都要按 [卡片审查验收标准](card-review-standard.md) 审核。Pages 虚拟实体预览通过后才考虑合并；没有 Home Assistant 现场测试，不得标「卡片通过」。
 
-- 视觉以 [设计规范 1.0](design-spec-1.0.md) 为准。设备卡已经改用该规范（圆角 40、底色 `#F0EFF2`），不再使用早先 Quick Access 的 14px 标题和 16px 圆角。其余卡片在各自实现前也以规范 1.0 为准。
-- 关态或离线：产品图降低饱和度和透明度，与设备卡一致。
+- 视觉的当前参考是 [设计规范 1.0](design-spec-1.0.md)（设备卡已按该规范实现：圆角 40、底色 `#F0EFF2`，不再使用早先 Quick Access 的 14px 标题和 16px 圆角）。用户即将重做设计。字号、圆角和颜色不是不可更改的合并条件，以审查标准的 A / B 分层为准。
+- 关闭和空闲仍可操作，除非实体 `unavailable` / `unknown` 或确实没有这项服务。不得因为 `off` 禁用模式芯片，也不得去掉「已关闭」。关态产品图是否变淡，随新设计稿，不作为平台条件。
 - 编辑器统一用 Lovelace 可视化编辑器。HA 内走 `ha-form` 和实体选择器，标签用中文。本地预览可以退回普通输入。字段命名用蛇形，和设备卡的 `show_toggle` 同一风格。
-- 每张卡注册进 `window.customCards`，可以单独在「添加卡片」里搜到。
-- 全部卡片打进同一个构建产物：仓库根目录 `vha.js`。HACS 资源路径 `/hacsfiles/VHA/vha.js`（对应 `/config/www/community/VHA/vha.js`）。`hacs.json` 的 `filename` 保持 `vha.js`。
-- 点击信息区打开 `hass-more-info`。开关、滑条、模式胶囊自己处理点击，不冒泡到 more-info。
+- 每张卡注册进 `window.customCards`，可以单独在「添加卡片」里搜到。`getStubConfig` 从当前家庭挑同类实体，选卡预览不得写入真实设备。
+- 全部卡片打进同一个构建产物：仓库根目录 `vha.js`。HACS 资源路径 `/hacsfiles/VHA/vha.js`（对应 `/config/www/community/VHA/vha.js`）。2026.11 起的 Marketplace 会登记 `/local/community/VHA/vha.js`。`hacs.json` 的 `filename` 保持 `vha.js`。
+- 点击信息区打开该实体的更多信息（官方入口是 `hass-action`，动作为 `more-info`）。开关、滑条、模式胶囊自己处理点击，不打开更多信息。
 - 不可用（`unavailable` / `unknown`）时禁用写操作，并显示「不可用」或「未知」。
 - 服务调用失败不吞掉，卡片上留一行短错误，方便在 HA 里排查。
 
 ## 路线图
 
-开发顺序就是看板从上到下的优先级。完成一张再开下一张的实现，文档和工单一次建齐。合并或发布前，按 [卡片审核与发布标准](card-review-standard.md) 审核。
+开发顺序就是看板从上到下的优先级。完成一张再开下一张的实现，文档和工单一次建齐。合并或发布前，按 [卡片审查验收标准](card-review-standard.md) 审核。
 
 1. 设备卡。按规范 1.0 重做大图、竖图、电子设备模块，说明见 [设备卡](cards/vha-device-card.md)。[PR #1](https://github.com/Virus0418/VHA/pull/1) 是上一版 Quick Access。
 2. 气候卡。规范 1.0 的制热 / 制冷变体已实现，说明见 [气候卡](cards/vha-climate-card.md)。工单里的圆环调温和耗电仍未做。
