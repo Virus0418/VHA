@@ -1,5 +1,7 @@
 import "./index";
 import type { HassEntity, HomeAssistant, VhaDeviceCardConfig } from "./types";
+import { mountFeatured } from "./preview-featured";
+import homepodUrl from "./assets/homepod-mini.png";
 import humidifierUrl from "./assets/preview/humidifier.jpg";
 import lampUrl from "./assets/preview/lamp.jpg";
 import iphoneUrl from "./assets/preview/iphone.jpg";
@@ -114,10 +116,71 @@ function createHass(): { hass: HomeAssistant; store: Store } {
       unit_of_measurement: "%",
       battery_state: "not_charging",
     }),
+    "climate.living_heat": entity("climate.living_heat", "heat", {
+      friendly_name: "Living room",
+      current_temperature: 22.5,
+      temperature: 24,
+      hvac_modes: ["off", "heat", "cool", "auto", "fan_only"],
+      fan_mode: "60",
+      fan_modes: ["0", "20", "40", "60", "80", "100"],
+      hvac_action: "heating",
+    }),
+    "climate.living_cool": entity("climate.living_cool", "cool", {
+      friendly_name: "Living room",
+      current_temperature: 21,
+      temperature: 20,
+      hvac_modes: ["off", "heat", "cool", "auto", "fan_only"],
+      fan_mode: "40",
+      fan_modes: ["0", "20", "40", "60", "80", "100"],
+      hvac_action: "cooling",
+    }),
+    "climate.living_off": entity("climate.living_off", "off", {
+      friendly_name: "Living room",
+      current_temperature: 21.5,
+      temperature: 24,
+      hvac_modes: ["off", "heat", "cool", "auto", "fan_only"],
+      fan_mode: "0",
+      fan_modes: ["0", "20", "40", "60", "80", "100"],
+    }),
+    "climate.gone": entity("climate.gone", "unavailable", {
+      friendly_name: "Living room",
+      current_temperature: 22,
+      hvac_modes: ["off", "heat", "cool"],
+      fan_modes: ["0", "100"],
+      fan_mode: "0",
+    }),
+    "climate.unknown": entity("climate.unknown", "unknown", { friendly_name: "Living room" }),
+    "sensor.air": entity("sensor.air", "35", { unit_of_measurement: "%", friendly_name: "Bedroom" }),
+    "sensor.air_gone": entity("sensor.air_gone", "unavailable", { unit_of_measurement: "%", friendly_name: "Bedroom" }),
+    "sensor.solar": entity("sensor.solar", "2.4", { unit_of_measurement: "kW", friendly_name: "Solar" }),
+    "sensor.grid": entity("sensor.grid", "6.8", { unit_of_measurement: "kW", friendly_name: "Grid" }),
+    "fan.purify": entity("fan.purify", "on", { friendly_name: "Purify", preset_mode: "auto" }),
+    "switch.vent": entity("switch.vent", "off", { friendly_name: "Ventilation" }),
+    "switch.living": entity("switch.living", "on", { friendly_name: "Living room" }),
+    "switch.bedroom_lamp": entity("switch.bedroom_lamp", "off", { friendly_name: "Bedroom" }),
+    "switch.kitchen": entity("switch.kitchen", "off", { friendly_name: "Kitchen" }),
+    "media_player.speaker": entity("media_player.speaker", "playing", {
+      friendly_name: "Speaker",
+      media_title: "Afternoon",
+      media_position: 147,
+      media_duration: 245,
+      entity_picture: homepodUrl,
+    }),
+    "media_player.idle": entity("media_player.idle", "idle", {
+      friendly_name: "Speaker",
+      entity_picture: homepodUrl,
+    }),
+    "media_player.gone": entity("media_player.gone", "unavailable", { friendly_name: "Speaker" }),
+    "media_player.plain": entity("media_player.plain", "paused", {
+      friendly_name: "无图音箱",
+      media_title: "Demo",
+      media_position: 12,
+      media_duration: 90,
+    }),
   };
 
   const refresh = () => {
-    document.querySelectorAll("vha-device-card").forEach((el) => {
+    document.querySelectorAll("vha-device-card, vha-climate-card, vha-sensor-card, vha-media-card").forEach((el) => {
       (el as HTMLElement & { hass: HomeAssistant }).hass = hass;
     });
   };
@@ -156,8 +219,39 @@ function createHass(): { hass: HomeAssistant; store: Store } {
         next = "on";
       }
       if (domain === "humidifier" && service === "turn_off") next = "off";
+      if (domain === "climate" && service === "set_hvac_mode" && typeof data?.hvac_mode === "string") {
+        next = data.hvac_mode;
+      }
+      if (domain === "climate" && service === "set_fan_mode" && typeof data?.fan_mode === "string") {
+        attributes.fan_mode = data.fan_mode;
+      }
+      if (domain === "climate" && service === "turn_off") next = "off";
+      if (domain === "climate" && service === "turn_on") next = current.state === "off" ? "heat" : current.state;
+      if (domain === "climate" && service === "set_temperature" && typeof data?.temperature === "number") {
+        attributes.temperature = data.temperature;
+      }
+      if ((domain === "number" || domain === "input_number") && service === "set_value") {
+        next = String(data?.value ?? current.state);
+      }
+      if (domain === "media_player" && service === "media_next_track") attributes.media_title = "下一首";
+      if (domain === "media_player" && service === "media_previous_track") attributes.media_title = "上一首";
       store[id] = { ...current, state: next, attributes };
       refresh();
+    },
+    callWS: async (message) => {
+      if (message.type !== "history/history_during_period") return {};
+      const ids = Array.isArray(message.entity_ids) ? message.entity_ids : [];
+      const id = String(ids[0] ?? "");
+      if (id !== "sensor.air") return { [id]: [] };
+      const day = new Date();
+      day.setHours(0, 0, 0, 0);
+      const values = [72, 66, 48, 28, 22, 40, 75];
+      return {
+        [id]: [8, 10, 12, 14, 16, 18, 20].map((hour, index) => ({
+          state: String(values[index]),
+          last_updated: new Date(day.getTime() + hour * 3600 * 1000).toISOString(),
+        })),
+      };
     },
   };
   return { hass, store };
@@ -435,4 +529,5 @@ if (app) {
   editorSlot.append(editor);
   editorBlock.append(editorHeading, editorSlot);
   app.append(editorBlock);
+  mountFeatured(app, hass);
 }

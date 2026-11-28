@@ -4,18 +4,25 @@
 
 VHA 是面向 Home Assistant 的 Lovelace 自定义卡片插件（HACS 类型：Dashboard / plugin）。
 
-只提供一张设备卡 `custom:vha-device-card`，用 `layout` 区分大图设备、竖图滑杆、电子设备模块。开关、滑杆和模式对真实实体调用对应服务。用户在 Lovelace 视图里添加卡片即可使用。
+提供四张 Lovelace 卡片，仍是单一 `vha.js`：
+
+- `custom:vha-device-card`：`layout` 区分大图、竖图、电子设备模块
+- `custom:vha-climate-card`：制热 / 制冷变体、模式芯片、风速
+- `custom:vha-sensor-card`：`layout` 为 `insight` 或 `metrics`
+- `custom:vha-media-card`：圆形播放器与可增删房间行
+
+开关、滑杆、芯片和播放键对真实实体调用对应服务。用户在 Lovelace 视图里添加卡片即可使用。
 
 ## 核心结构
 
-- `src/index.ts`：注册自定义元素 `vha-device-card` 与编辑器，并写入 `window.customCards`
-- `src/card.ts`：卡片渲染、滑杆、动作栏与更多信息
-- `src/editor.ts`：Lovelace 可视化配置（HA 内用 `ha-form`，本地预览用普通输入）
-- `src/model.ts`：三种排版的视图数据与模块显隐
-- `src/control.ts`：滑杆、动作栏与电源写入
+- `src/index.ts`：注册四张卡片与编辑器，并写入 `window.customCards`
+- `src/card.ts`、`src/climate-card.ts`、`src/sensor-card.ts`、`src/media-card.ts`：卡片渲染
+- `src/editor.ts`、`src/climate-editor.ts`、`src/sensor-editor.ts`、`src/media-editor.ts`：Lovelace 可视化配置（HA 内用 `ha-form`，本地预览用普通输入）
+- `src/model.ts`、`src/climate-model.ts`、`src/sensor-model.ts`、`src/media-model.ts`：视图数据
+- `src/control.ts`、`src/bind.ts`：滑杆、动作与更多信息
 - `src/toggle.ts`：可切换域、状态判断、服务调用
-- `src/styles.ts`：卡片样式（Geist 与 Noto Sans SC 子集随构建内联）
-- `src/preview.ts` + `index.html`：不依赖 HA 的本地预览
+- `src/styles.ts`：共用样式（Geist 与 Noto Sans SC 子集随构建内联）
+- `src/preview.ts`、`src/preview-featured.ts` + `index.html`：不依赖 HA 的本地预览
 - `src/assets/`：预览用产品图
 - 仓库根目录 `vha.js`：已构建产物，供 HACS 在没有 GitHub Release 时加载
 - `hacs.json`：HACS Dashboard 清单，`filename` 为 `vha.js`
@@ -23,7 +30,8 @@ VHA 是面向 Home Assistant 的 Lovelace 自定义卡片插件（HACS 类型：
 ## 开发规范
 
 - 只做 Lovelace 卡片。不要注册侧边栏面板，不要要求修改 `configuration.yaml` 或 `panel_custom`。
-- 卡片类型保持 `custom:vha-device-card`。视觉对齐设计规范 1.0：大图、竖图、电子设备模块三种排版，不另加卡片类型。
+- 已有类型保持不变：设备卡、气候卡、传感器卡、媒体卡。视觉对齐设计规范 1.0。不要实现摄像、调控、家电、提醒、媒体库，也不要另加第 10 种类型。
+- 气候、传感器、媒体未在真实 Home Assistant 验收前，不要写成「卡片通过」。
 - 改源码后必须 `npm run build`，并保证根目录 `vha.js` 与构建结果一致。
 - 保留 `hacs.json` 与中文 README 中的 HACS 安装说明。HACS 资源路径为 `/hacsfiles/VHA/vha.js`。
 - 不要写入密钥，不要把插件安装进任何 Home Assistant 实例。
@@ -59,3 +67,9 @@ VHA 是面向 Home Assistant 的 Lovelace 自定义卡片插件（HACS 类型：
 - 目标：用同一张 `custom:vha-device-card` 替换 Quick Access 紧凑瓦，做出大图、竖图滑杆、电子设备模块。
 - 方法：`layout` 取 `large` / `vertical` / `electronics`，省略时为 `large`。模块用布尔开关，栏宽不足 320px 时动作栏折到图下。Geist 与中文子集随 `vha.js` 内联。
 - 要点：不新增卡片类型。旧字段 `entity`、`name`、`model`、`status`、`image`、`show_toggle` 仍可用。不改 Home Assistant 配置。说明见 `docs/cards/vha-device-card.md`。
+
+### 2026-11-28 气候、传感器、媒体卡按规范 1.0 实现
+
+- 目标：在不改设备卡行为的前提下，做出 `custom:vha-climate-card`、`custom:vha-sensor-card`（`insight` / `metrics`）、`custom:vha-media-card`。
+- 方法：复用设备卡的 token、字体、不可用处理和短错误。气候制热 / 制冷是同一张卡的模式变体。传感器目标滑杆和芯片默认不出现。媒体房间可增删，`show: false` 隐藏。进度用 `m:ss`。
+- 要点：仍是单一 `vha.js`。圆环调温、其余传感器布局、遥控模块未做。本地预览已看过，未做实机测试，不标「卡片通过」。

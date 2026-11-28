@@ -17,6 +17,8 @@ export interface HomeAssistant {
     target?: { entity_id?: string | string[] },
   ) => Promise<unknown>;
   formatEntityState?: (stateObj: HassEntity) => string;
+  /** Optional. Real Home Assistant provides this; the local preview uses it for sensor history. */
+  callWS?: (message: { type: string; [key: string]: unknown }) => Promise<unknown>;
 }
 
 export type DeviceLayout = "large" | "vertical" | "electronics";
@@ -77,6 +79,56 @@ export interface VhaDeviceCardConfig {
   memory_label?: string;
   cpu_label?: string;
   gpu_label?: string;
+}
+
+export interface VhaClimateCardConfig {
+  type?: string;
+  entity?: string;
+  name?: string;
+  /** Hide the fan slider. Omitted means show it when the entity has fan modes. */
+  show_fan?: boolean;
+}
+
+export interface SensorChipConfig {
+  name?: string;
+  entity?: string;
+  mode?: string;
+}
+
+export interface SensorMetricConfig {
+  entity?: string;
+  name?: string;
+}
+
+export interface VhaSensorCardConfig {
+  type?: string;
+  entity?: string;
+  name?: string;
+  /** `insight` air-quality readout, or `metrics` tiled numbers. Omitted means `insight`. */
+  layout?: string;
+  caption?: string;
+  status?: string;
+  show_timeline?: boolean;
+  chips?: SensorChipConfig[];
+  /** Optional linked entity for the bottom target slider. Omitted means the slider is absent. */
+  target_entity?: string;
+  target_label?: string;
+  metrics?: SensorMetricConfig[];
+}
+
+export interface MediaRoomConfig {
+  entity?: string;
+  name?: string;
+  /** `false` hides the row and keeps it in the config. */
+  show?: boolean;
+}
+
+export interface VhaMediaCardConfig {
+  type?: string;
+  entity?: string;
+  name?: string;
+  image?: string;
+  rooms?: MediaRoomConfig[];
 }
 
 declare global {

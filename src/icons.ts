@@ -68,6 +68,29 @@ export function uiIcon(
   return svg("0 0 24 24", map[name], size);
 }
 
+const ELLIPSIS = `<circle cx="5" cy="12" r="1.35" fill="currentColor"/><circle cx="12" cy="12" r="1.35" fill="currentColor"/><circle cx="19" cy="12" r="1.35" fill="currentColor"/>`;
+const POWER = `<path d="M12 3.6v6.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+<path d="M7.05 6.7a6.15 6.15 0 1 0 9.9 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/>`;
+const PLAY = `<path d="M8.2 6.4v11.2l9.2-5.6-9.2-5.6z" fill="currentColor"/>`;
+const PAUSE = `<path d="M7.4 5.8h2.6v12.4H7.4zM14 5.8h2.6v12.4H14z" fill="currentColor"/>`;
+const SKIP_BACK = `<path d="M16.2 6.2 9.2 12l7 5.8V6.2z" fill="currentColor"/><path d="M7.2 6.2v11.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>`;
+const SKIP_FORWARD = `<path d="M7.8 6.2 14.8 12l-7 5.8V6.2z" fill="currentColor"/><path d="M16.8 6.2v11.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>`;
+
+export function markIcon(
+  name: "ellipsis" | "power" | "play" | "pause" | "prev" | "next",
+  size = 22,
+): string {
+  const map = {
+    ellipsis: ELLIPSIS,
+    power: POWER,
+    play: PLAY,
+    pause: PAUSE,
+    prev: SKIP_BACK,
+    next: SKIP_FORWARD,
+  };
+  return svg("0 0 24 24", map[name], size);
+}
+
 export function silhouetteIcon(kind: "tower" | "laptop" | "generic"): string {
   const inner = kind === "tower" ? TOWER : kind === "laptop" ? LAPTOP : GENERIC;
   return svg("0 0 80 80", inner, 96);
