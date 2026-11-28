@@ -2,7 +2,12 @@
 
 VHA 是一套面向 Home Assistant 的 Lovelace **自定义卡片**（HACS 类型：Dashboard）。
 
-当前提供一张**设备卡**（`custom:vha-device-card`）。同一类型有三种排版：大图设备、竖图滑杆、电子设备模块。视觉对齐 [设计规范 1.0](docs/design-spec-1.0.md)。
+当前提供四张卡片，视觉对齐 [设计规范 1.0](docs/design-spec-1.0.md)：
+
+- **设备卡**（`custom:vha-device-card`）：大图设备、竖图滑杆、电子设备模块
+- **气候卡**（`custom:vha-climate-card`）：制热 / 制冷变体、模式芯片、风速
+- **传感器卡**（`custom:vha-sensor-card`）：洞察与指标两种排版
+- **媒体卡**（`custom:vha-media-card`）：圆形播放器与可增删的房间行
 
 - 只需在仪表盘视图里添加卡片，**不必改 `configuration.yaml`**
 - **不会**注册自定义侧边栏面板，HA 原有菜单、顶栏、侧边栏保持原样
@@ -61,6 +66,36 @@ show_toggle: true
 ```
 
 竖图与电子设备的字段、模块开关和窄栏行为见 [设备卡说明](docs/cards/vha-device-card.md)。
+
+气候、传感器、媒体示例：
+
+```yaml
+type: custom:vha-climate-card
+entity: climate.living_room
+name: 客厅
+```
+
+```yaml
+type: custom:vha-sensor-card
+layout: metrics
+name: 用电
+metrics:
+  - entity: sensor.solar_power
+    name: 光伏
+  - entity: sensor.grid_power
+    name: 市电
+```
+
+```yaml
+type: custom:vha-media-card
+entity: media_player.speaker
+name: 音箱
+rooms:
+  - entity: switch.living
+    name: 客厅
+```
+
+字段和尚未实现的范围见 [气候卡](docs/cards/vha-climate-card.md)、[传感器卡](docs/cards/vha-sensor-card.md)、[媒体卡](docs/cards/vha-media-card.md)。这三张卡还没有在真实设备上验收。
 
 ## 配置项
 

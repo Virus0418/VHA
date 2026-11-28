@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>VHA 设备卡 — 预览</title>
+      <title>VHA 卡片 — 预览</title>
     <style>
       * { box-sizing: border-box; }
       body {
@@ -19,11 +19,14 @@
       section { margin: 0 0 36px; }
       h2 { margin: 0 0 12px; font-size: 16px; font-weight: 500; color: #3A3A3C; }
       .grid { display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch; }
+      .grid.hug { align-items: flex-start; }
       .slot { min-width: 0; }
       .slot.large { width: min(100%, 448px); }
       .slot.narrow { width: 240px; }
       .slot.vertical { width: min(100%, 220px); }
-      .slot.electronics { width: min(100%, 448px); }
+      .slot.electronics, .slot.media { width: min(100%, 448px); }
+      .slot.wide { width: min(100%, 480px); }
+      .slot.squeeze { width: 220px; }
       .slot.editor { width: min(100%, 420px); background: #fff; border-radius: 24px; padding: 16px; }
       .slot.dark { width: min(100%, 448px); background: #1c1c1e; border-radius: 28px; padding: 16px; }
       .slot.dark h2 { color: #f2f2f4; }
@@ -32,8 +35,8 @@
   </head>
   <body>
     <div class="page">
-      <h1>VHA 设备卡</h1>
-      <p class="lead">同一张 custom:vha-device-card 的三种排版。宽度跟栏走，下面包含关态、不可用、缺图和窄栏。</p>
+      <h1>VHA 卡片</h1>
+      <p class="lead">设备卡仍是原来的三种排版。下面另有气候、传感器和媒体卡：制热 / 制冷 / 关、两种传感器排版、播放与空闲，以及不可用和窄栏。</p>
       <div id="app"></div>
     </div>
     <script type="module" src="/src/preview.ts"></script>

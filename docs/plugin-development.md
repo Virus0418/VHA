@@ -8,7 +8,9 @@
 - 设计稿：客厅总览。画面上有 CCTV、Smart Reminder、圆环温控、Quick Access 设备瓦、底部媒体条、右下能耗区。
 - 第一批卡片的视觉语言：[设计规范 1.0](design-spec-1.0.md)。设计来源是 Figma 文件 [HAUI](https://www.figma.com/design/IwGZXxoRz00glVJcDiTEEE/HAUI)，页面「01 · Card」，展示板「Showcase · First batch」。
 
-设备卡的当前实现按 [设计规范 1.0](design-spec-1.0.md) 重做：仍是 `custom:vha-device-card`，用 `layout` 区分大图、竖图和电子设备模块。字段和模块开关见 [设备卡](cards/vha-device-card.md)。[PR #1](https://github.com/Virus0418/VHA/pull/1) 是上一版 Quick Access 紧凑瓦，不作为当前视觉。九类归并仍然有效。
+设备卡的当前实现按 [设计规范 1.0](design-spec-1.0.md) 重做：仍是 `custom:vha-device-card`，用 `layout` 区分大图、竖图和电子设备模块。字段和模块开关见 [设备卡](cards/vha-device-card.md)。[PR #1](https://github.com/Virus0418/VHA/pull/1) 是上一版 Quick Access 紧凑瓦，不作为当前视觉。
+
+气候、传感器、媒体已按规范 1.0 的展示稿做出可用卡片，说明见各自文档。这三张卡目前只覆盖展示稿上的排版：气候是制热 / 制冷变体和风速，传感器是洞察与指标两种 `layout`，媒体是圆形播放器和可增删的房间行。下表仍是完整规划。圆环调温、耗电、九种传感器布局、遥控模块都还没做，九类归并仍然有效，也不另加第 10 张。
 
 ## 目标
 
@@ -25,9 +27,9 @@
 | 顺序 | 名称 | 类型 | 一张卡覆盖什么 | 工单 | 目标列 |
 | --- | --- | --- | --- | --- | --- |
 | 1 | 设备卡 | `custom:vha-device-card` | 开关、灯、风扇、门锁、封面、脚本/场景执行、产品图瓦片 | [#2](https://github.com/Virus0418/VHA/issues/2) | 待审查 |
-| 2 | 气候卡 | `custom:vha-climate-card` | 空调圆环、模式、电源；可选耗电 | [#3](https://github.com/Virus0418/VHA/issues/3) | 待办 |
-| 3 | 传感器卡 | `custom:vha-sensor-card` | 数值、统计、曲线、电量、连通性、能耗色带、主机多指标、横排 glance | [#4](https://github.com/Virus0418/VHA/issues/4) | 待办 |
-| 4 | 媒体卡 | `custom:vha-media-card` | 播放条；遥控是同一张卡里的可选模块 | [#5](https://github.com/Virus0418/VHA/issues/5) | 待办 |
+| 2 | 气候卡 | `custom:vha-climate-card` | 规划：空调圆环、模式、电源；可选耗电。当前实现：规范 1.0 的制热 / 制冷变体、模式芯片、风速 | [#3](https://github.com/Virus0418/VHA/issues/3) | 待审查 |
+| 3 | 传感器卡 | `custom:vha-sensor-card` | 规划：数值、统计、曲线、电量、连通性、能耗色带、主机多指标、横排 glance。当前实现：洞察与指标两种排版 | [#4](https://github.com/Virus0418/VHA/issues/4) | 待审查 |
+| 4 | 媒体卡 | `custom:vha-media-card` | 规划：播放条；遥控是同一张卡里的可选模块。当前实现：圆形播放器与可增删房间行 | [#5](https://github.com/Virus0418/VHA/issues/5) | 待审查 |
 | 5 | 摄像卡 | `custom:vha-camera-card` | 直播画面与多镜头。产品图开关不是这张卡 | [#6](https://github.com/Virus0418/VHA/issues/6) | 待办 |
 | 6 | 调控卡 | `custom:vha-control-card` | 独立滑条（摆风角度、亮度、风速百分比） | [#7](https://github.com/Virus0418/VHA/issues/7) | 待办 |
 | 7 | 家电卡 | `custom:vha-appliance-card` | 洗衣、烘干、洗碗、扫地等程序类家电 | [#8](https://github.com/Virus0418/VHA/issues/8) | 待办 |
@@ -74,9 +76,9 @@
 开发顺序就是看板从上到下的优先级。完成一张再开下一张的实现，文档和工单一次建齐。合并或发布前，按 [卡片审核与发布标准](card-review-standard.md) 审核。
 
 1. 设备卡。按规范 1.0 重做大图、竖图、电子设备模块，说明见 [设备卡](cards/vha-device-card.md)。[PR #1](https://github.com/Virus0418/VHA/pull/1) 是上一版 Quick Access。
-2. 气候卡。主视图三台空调，也是设计稿右侧圆环。
-3. 传感器卡。替换数量最多：盈松小窝的体重、电量、PC 指标，Tech 的 NAS / PC / 连通性。
-4. 媒体卡，含可选遥控模块。替换 KODI 媒体控制和 universal-remote-card。
+2. 气候卡。规范 1.0 的制热 / 制冷变体已实现，说明见 [气候卡](cards/vha-climate-card.md)。工单里的圆环调温和耗电仍未做。
+3. 传感器卡。洞察与指标两种排版已实现，说明见 [传感器卡](cards/vha-sensor-card.md)。体重曲线、电量、连通性和能耗色带仍未做。
+4. 媒体卡。圆形播放器和房间行已实现，说明见 [媒体卡](cards/vha-media-card.md)。遥控模块仍未做。
 5. 摄像卡。按设计稿预留，当前主视图没有真正的直播。
 6. 调控卡。替换两张风扇角度滑条。
 7. 家电卡。替换生活阳台洗衣机卡。
