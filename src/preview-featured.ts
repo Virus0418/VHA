@@ -47,10 +47,25 @@ export function mountFeatured(app: HTMLElement, hass: HomeAssistant) {
   const climate = section(app, "气候卡");
   place(climate, "制热", "large", "vha-climate-card", { type: "custom:vha-climate-card", entity: "climate.living_heat" }, hass);
   place(climate, "制冷", "large", "vha-climate-card", { type: "custom:vha-climate-card", entity: "climate.living_cool" }, hass);
+  place(
+    climate,
+    "关闭可点",
+    "large",
+    "vha-climate-card",
+    { type: "custom:vha-climate-card", entity: "climate.socket_off", show_fan: false },
+    hass,
+  );
   place(climate, "关", "large", "vha-climate-card", { type: "custom:vha-climate-card", entity: "climate.living_off" }, hass);
   place(climate, "不可用", "large", "vha-climate-card", { type: "custom:vha-climate-card", entity: "climate.gone" }, hass);
   place(climate, "未知", "narrow", "vha-climate-card", { type: "custom:vha-climate-card", entity: "climate.unknown" }, hass);
-  place(climate, "窄栏", "narrow", "vha-climate-card", { type: "custom:vha-climate-card", entity: "climate.living_heat" }, hass);
+  place(
+    climate,
+    "窄栏",
+    "narrow",
+    "vha-climate-card",
+    { type: "custom:vha-climate-card", entity: "climate.socket_off", show_fan: false },
+    hass,
+  );
   place(climate, "配错域", "narrow", "vha-climate-card", { type: "custom:vha-climate-card", entity: "light.bedroom" }, hass);
   place(climate, "深色页面", "dark", "vha-climate-card", { type: "custom:vha-climate-card", entity: "climate.living_cool" }, hass);
 

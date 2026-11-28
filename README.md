@@ -125,7 +125,9 @@ npm install
 npm run dev
 ```
 
-浏览器打开终端里的地址（默认 http://localhost:4174）可预览设备卡，不需要 Home Assistant。
+浏览器打开终端里的地址（默认 http://localhost:4174）可预览四张卡片，不需要 Home Assistant。页面上的实体都是虚拟的，包含开启、关闭、窄栏和缺实体。
+
+同一套页面会部署到 GitHub Pages：<https://virus0418.github.io/VHA/> 。改完卡片后先看这个预览，再装进 Home Assistant。第一次需要在仓库 **Settings → Pages** 里把 Source 设为 **GitHub Actions**。如果部署被分支策略拦住，把该环境允许的部署分支加上当前分支，或合并到 `main` 后再看。本地静态构建是 `npm run pages`，产物在 `site/`，站点根路径是 `/VHA/`。
 
 ```bash
 npm run build

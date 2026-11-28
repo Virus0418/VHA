@@ -1,6 +1,7 @@
 import { bindHorizontalSlider, bindInfo, openMoreInfo, percentLabel } from "./bind";
 import {
   buildClimateView,
+  climateGridOptions,
   setClimateFan,
   setClimateMode,
   setClimatePower,
@@ -8,6 +9,8 @@ import {
 } from "./climate-model";
 import { escapeAttr, escapeHtml, shortError } from "./format";
 import { markIcon } from "./icons";
+import { paintChanged } from "./paint";
+import { climateStub, isPickerPreview } from "./stub";
 import { cardStyles } from "./styles";
 import type { HomeAssistant, VhaClimateCardConfig } from "./types";
 
@@ -17,6 +20,8 @@ export class VhaClimateCard extends HTMLElement {
   private _sheet?: CSSStyleSheet;
   private _error = "";
   private _dragging = false;
+  private _paintKey = "";
+  private _lastMode = "";
 
   constructor() {
     super();
@@ -27,13 +32,19 @@ export class VhaClimateCard extends HTMLElement {
     return document.createElement("vha-climate-card-editor");
   }
 
-  static getStubConfig(): VhaClimateCardConfig {
-    return { type: "custom:vha-climate-card", entity: "" };
+  static getStubConfig(
+    hass?: HomeAssistant,
+    entities: string[] = [],
+    entitiesFallback: string[] = [],
+  ): VhaClimateCardConfig {
+    return climateStub(hass, entities, entitiesFallback);
   }
 
   setConfig(config: VhaClimateCardConfig) {
     if (!config || typeof config !== "object") throw new Error("VHA 气候卡需要一份配置");
+    const previous = this._config.entity;
     this._config = { ...config };
+    if (config.entity !== previous) this._lastMode = "";
     this._error = "";
     this._render();
   }
@@ -53,7 +64,7 @@ export class VhaClimateCard extends HTMLElement {
   }
 
   getGridOptions() {
-    return { columns: 6, min_columns: 2, rows: 5, min_rows: 4 };
+    return climateGridOptions(this._config.show_fan !== false);
   }
 
   connectedCallback() {
@@ -68,6 +79,7 @@ export class VhaClimateCard extends HTMLElement {
   }
 
   private async _run(task: () => Promise<void>) {
+    if (isPickerPreview(this)) return;
     try {
       await task();
       this._error = "";
@@ -77,12 +89,21 @@ export class VhaClimateCard extends HTMLElement {
     this._render();
   }
 
+  private _remember(view: ClimateView) {
+    const selected = view.chips.find((chip) => chip.selected);
+    if (selected) this._lastMode = selected.mode;
+  }
+
   private _render() {
     if (!this.shadowRoot || this._dragging) return;
     this._ensureStyles();
     const view = buildClimateView(this._config, this._hass);
+    this._remember(view);
+    const decision = paintChanged(this._paintKey, { view, error: this._error });
+    if (!decision.changed) return;
     this.shadowRoot.innerHTML = renderClimate(view, this._error);
     this._bind(view);
+    this._paintKey = decision.key;
   }
 
   private _bind(view: ClimateView) {
@@ -94,7 +115,7 @@ export class VhaClimateCard extends HTMLElement {
       ev.preventDefault();
       const state = view.entityId ? this._hass?.states[view.entityId] : undefined;
       if (!this._hass || !state || view.powerDisabled) return;
-      void this._run(() => setClimatePower(this._hass!, state, !view.powerOn));
+      void this._run(() => setClimatePower(this._hass!, state, !view.powerOn, this._lastMode));
     });
     root.querySelectorAll<HTMLButtonElement>("[data-mode]").forEach((el) => {
       el.addEventListener("click", (ev) => {
@@ -145,7 +166,7 @@ function renderClimate(view: ClimateView, error: string): string {
   return `<ha-card class="card tone-${view.tone}">
     <div class="layout-climate">
       <div class="ihead">
-        <button class="ititle info" type="button" data-info="${escapeAttr(id)}">${escapeHtml(view.title)}</button>
+        <button class="ititle info" type="button" data-info="${escapeAttr(id)}"><span class="clamp">${escapeHtml(view.title)}</span></button>
         <div class="iactions">
           <button class="overflow" type="button" data-info="${escapeAttr(id)}" aria-label="更多信息">${markIcon("ellipsis", 22)}</button>
           <button class="power${view.powerOn ? " on" : ""}" type="button" data-power aria-pressed="${view.powerOn}" ${view.powerDisabled ? "disabled" : ""} aria-label="电源">${markIcon("power", 22)}</button>

@@ -1,5 +1,26 @@
 import "./index";
 import type { HassEntity, HomeAssistant, VhaDeviceCardConfig } from "./types";
+
+class PreviewHaCard extends HTMLElement {
+  constructor() {
+    super();
+    const root = this.attachShadow({ mode: "open" });
+    root.innerHTML = `<style>
+      :host {
+        display: block;
+        background: var(--ha-card-background, var(--card-background-color, white));
+        border-radius: var(--ha-card-border-radius, 12px);
+        box-shadow: var(--ha-card-box-shadow, none);
+        border-width: var(--ha-card-border-width, 1px);
+        border-style: solid;
+        border-color: var(--ha-card-border-color, var(--divider-color, #e0e0e0));
+        color: var(--primary-text-color, inherit);
+        overflow: hidden;
+      }
+    </style><slot></slot>`;
+  }
+}
+if (!customElements.get("ha-card")) customElements.define("ha-card", PreviewHaCard);
 import { mountFeatured } from "./preview-featured";
 import homepodUrl from "./assets/homepod-mini.png";
 import humidifierUrl from "./assets/preview/humidifier.jpg";
@@ -150,6 +171,14 @@ function createHass(): { hass: HomeAssistant; store: Store } {
       fan_mode: "0",
     }),
     "climate.unknown": entity("climate.unknown", "unknown", { friendly_name: "Living room" }),
+    "climate.socket_off": entity("climate.socket_off", "off", {
+      friendly_name: "客厅空调 空调插座",
+      current_temperature: 25,
+      temperature: 26,
+      hvac_modes: ["off", "cool", "heat", "auto", "fan_only", "dry"],
+      fan_modes: ["0", "20", "40", "60", "80", "100"],
+      fan_mode: "0",
+    }),
     "sensor.air": entity("sensor.air", "35", { unit_of_measurement: "%", friendly_name: "Bedroom" }),
     "sensor.air_gone": entity("sensor.air_gone", "unavailable", { unit_of_measurement: "%", friendly_name: "Bedroom" }),
     "sensor.solar": entity("sensor.solar", "2.4", { unit_of_measurement: "kW", friendly_name: "Solar" }),

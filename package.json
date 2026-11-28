@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && cp release/vha.js vha.js",
-    "preview": "vite --open"
+    "preview": "vite --open",
+    "pages": "vite build --config vite.pages.config.ts"
   },
   "keywords": [
     "home-assistant",
@@ -17,6 +18,7 @@
   ],
   "license": "MIT",
   "devDependencies": {
+    "tsx": "^4.20.3",
     "typescript": "^5.7.0",
     "vite": "^6.0.0"
   },

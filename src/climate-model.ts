@@ -155,8 +155,31 @@ export function climateTone(state?: HassEntity): ClimateTone {
   return "neutral";
 }
 
-function blocked(state?: HassEntity): boolean {
-  return !state || state.state === "unavailable" || state.state === "unknown" || state.state === "off";
+/** Unavailable, unknown, or a missing entity. Off is still operable. */
+function writesDisabled(state?: HassEntity): boolean {
+  return !state || state.state === "unavailable" || state.state === "unknown";
+}
+
+/** Grid follows the 448×580 climate frame without pinning CSS to those pixels. */
+export function climateGridOptions(showFan: boolean): {
+  columns: number;
+  min_columns: number;
+  rows: number;
+  min_rows: number;
+} {
+  return {
+    columns: 6,
+    min_columns: 4,
+    rows: showFan ? 8 : 7,
+    min_rows: showFan ? 6 : 5,
+  };
+}
+
+/** Mode to restore when `climate.turn_on` is missing. Last mode wins, else the first non-off mode. */
+export function resumeHvacMode(state: HassEntity, lastMode?: string): string | undefined {
+  const modes = stringList(state.attributes.hvac_modes).filter((mode) => mode !== "off");
+  if (lastMode && modes.includes(lastMode)) return lastMode;
+  return modes[0];
 }
 
 export function buildClimateView(config: VhaClimateCardConfig, hass?: HomeAssistant): ClimateView {
@@ -208,7 +231,7 @@ export function buildClimateView(config: VhaClimateCardConfig, hass?: HomeAssist
     showFan: config.show_fan !== false && fan.show,
     fanFraction: fan.fraction,
     fanLabel: fan.label,
-    controlsDisabled: blocked(state),
+    controlsDisabled: writesDisabled(state),
     powerOn: !dead && !off,
     powerDisabled: dead,
   };
@@ -240,22 +263,45 @@ function requireClimate(state?: HassEntity): HassEntity {
   return state;
 }
 
-export async function setClimatePower(hass: HomeAssistant, state: HassEntity, on: boolean): Promise<void> {
+export async function setClimatePower(
+  hass: HomeAssistant,
+  state: HassEntity,
+  on: boolean,
+  lastMode?: string,
+): Promise<void> {
   const current = requireClimate(state);
   const active = current.state !== "off";
   if (active === on) return;
-  await hass.callService("climate", on ? "turn_on" : "turn_off", { entity_id: current.entity_id });
+  const entityId = current.entity_id;
+  if (on) {
+    try {
+      await hass.callService("climate", "turn_on", { entity_id: entityId });
+      return;
+    } catch (err) {
+      const mode = resumeHvacMode(current, lastMode);
+      if (!mode) throw err instanceof Error ? err : new Error("无法开机");
+      await hass.callService("climate", "set_hvac_mode", { entity_id: entityId, hvac_mode: mode });
+      return;
+    }
+  }
+  try {
+    await hass.callService("climate", "turn_off", { entity_id: entityId });
+  } catch (err) {
+    const modes = stringList(current.attributes.hvac_modes);
+    if (!modes.includes("off")) throw err instanceof Error ? err : new Error("无法关机");
+    await hass.callService("climate", "set_hvac_mode", { entity_id: entityId, hvac_mode: "off" });
+  }
 }
 
 export async function setClimateMode(hass: HomeAssistant, state: HassEntity, mode: string): Promise<void> {
   const current = requireClimate(state);
-  if (current.state === "off") throw new Error("已关闭");
+  if (!mode || mode === "off") return;
+  if (current.state === mode) return;
   await hass.callService("climate", "set_hvac_mode", { entity_id: current.entity_id, hvac_mode: mode });
 }
 
 export async function setClimateFan(hass: HomeAssistant, state: HassEntity, fraction: number): Promise<void> {
   const current = requireClimate(state);
-  if (current.state === "off") throw new Error("已关闭");
   const mode = fanModeForFraction(current, fraction);
   if (!mode) return;
   await hass.callService("climate", "set_fan_mode", { entity_id: current.entity_id, fan_mode: mode });
